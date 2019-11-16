@@ -95,16 +95,22 @@ const App = () => {
     // Global Dispatch Function
     const dispatch = action => [dispatchTodos, dispatchFilter].forEach(fn => fn(action));
 
-    const filteredTodos = todos.filter(todo => {
-        if (filter === ALL) {
+    // Global state
+    const state = {
+        filter,
+        todos,
+    };
+
+    const filteredTodos = state.todos.filter(todo => {
+        if (state.filter === ALL) {
             return true;
         }
 
-        if (filter === COMPLETE && todo.complete) {
+        if (state.filter === COMPLETE && todo.complete) {
             return true;
         }
 
-        if (filter === INCOMPLETE && !todo.complete) {
+        if (state.filter === INCOMPLETE && !todo.complete) {
             return true;
         }
 
