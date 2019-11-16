@@ -1,20 +1,21 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import classnames from "classnames";
 
-import {DO_TODO, UNDO_TODO} from "./App";
+import {DO_TODO, TodoContext, UNDO_TODO} from "./App";
 
-const TodoList = ({ dispatch, todos }) => {
+const TodoList = ({ todos }) => {
 
     return (
         <ul className="list-group mb-3">
             {todos.map(todo => (
-                <TodoItem key={todo.id}  dispatch={dispatch} todo={todo} />
+                <TodoItem key={todo.id} todo={todo} />
             ))}
         </ul>
     );
 };
 
-const TodoItem = ({ dispatch, todo }) => {
+const TodoItem = ({ todo }) => {
+    const dispatch = useContext(TodoContext);
 
     const handelChange = () => dispatch({
         type: todo.complete ? UNDO_TODO : DO_TODO,

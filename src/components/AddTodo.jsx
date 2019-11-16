@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import uuid from "uuid/v4";
 
-import {ADD_TODO} from "./App";
+import {ADD_TODO, TodoContext} from "./App";
 
-const AddTodo = ({ dispatch }) => {
+const AddTodo = () => {
+    const dispatch = useContext(TodoContext);
+
     const [task, setTask] = useState('');
 
     const handleChangeInput = event => setTask(event.target.value);

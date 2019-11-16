@@ -1,4 +1,4 @@
-import React, { useState, useReducer } from 'react';
+import React, { useReducer, createContext } from 'react';
 import uuid from 'uuid/v4';
 
 import Filter from './Filter';
@@ -86,6 +86,8 @@ const todoReducer = (state, action) => {
     }
 };
 
+export const TodoContext = createContext(null);
+
 const App = () => {
     const [filter, dispatchFilter] = useReducer(filterReducer, ALL);
     const [todos, dispatchTodos] = useReducer(todoReducer, initialTodos);
@@ -109,11 +111,13 @@ const App = () => {
     });
 
     return (
-        <div className="container mt-5">
-            <Filter dispatch={dispatchFilter} />
-            <TodoList dispatch={dispatchTodos} todos={filteredTodos} />
-            <AddTodo dispatch={dispatchTodos} />
-        </div>
+        <TodoContext.Provider value={dispatchTodos}>
+            <div className="container mt-5">
+                <Filter dispatch={dispatchFilter} />
+                <TodoList todos={filteredTodos} />
+                <AddTodo />
+            </div>
+        </TodoContext.Provider>
     );
 };
 
