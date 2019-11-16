@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
-import { SHOW_ALL, SHOW_COMPLETE, SHOW_INCOMPLETE } from './App';
+import {DispatchContext, SHOW_ALL, SHOW_COMPLETE, SHOW_INCOMPLETE} from './App';
 
-const Filter = ({ dispatch }) => {
+const Filter = () => {
+
+    const dispatch = useContext(DispatchContext);
 
     const handleShowAll = () => {
         dispatch({ type: SHOW_ALL });

@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import classnames from "classnames";
 
-import {DO_TODO, TodoContext, UNDO_TODO} from "./App";
+import {DO_TODO, DispatchContext, UNDO_TODO} from "./App";
 
 const TodoList = ({ todos }) => {
 
@@ -15,7 +15,7 @@ const TodoList = ({ todos }) => {
 };
 
 const TodoItem = ({ todo }) => {
-    const dispatch = useContext(TodoContext);
+    const dispatch = useContext(DispatchContext);
 
     const handelChange = () => dispatch({
         type: todo.complete ? UNDO_TODO : DO_TODO,

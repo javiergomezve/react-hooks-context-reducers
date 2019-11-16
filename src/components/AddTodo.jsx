@@ -1,10 +1,10 @@
 import React, { useState, useContext } from 'react';
 import uuid from "uuid/v4";
 
-import {ADD_TODO, TodoContext} from "./App";
+import {ADD_TODO, DispatchContext} from "./App";
 
 const AddTodo = () => {
-    const dispatch = useContext(TodoContext);
+    const dispatch = useContext(DispatchContext);
 
     const [task, setTask] = useState('');
 

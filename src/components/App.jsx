@@ -42,7 +42,7 @@ const filterReducer = (state, action) => {
             return INCOMPLETE;
 
         default:
-            throw new Error();
+            return state;
     }
 };
 
@@ -82,17 +82,18 @@ const todoReducer = (state, action) => {
             });
 
         default:
-            throw new Error();
+            return state;
     }
 };
 
-export const TodoContext = createContext(null);
+export const DispatchContext = createContext(null);
 
 const App = () => {
     const [filter, dispatchFilter] = useReducer(filterReducer, ALL);
     const [todos, dispatchTodos] = useReducer(todoReducer, initialTodos);
 
-
+    // Global Dispatch Function
+    const dispatch = action => [dispatchTodos, dispatchFilter].forEach(fn => fn(action));
 
     const filteredTodos = todos.filter(todo => {
         if (filter === ALL) {
@@ -111,13 +112,13 @@ const App = () => {
     });
 
     return (
-        <TodoContext.Provider value={dispatchTodos}>
+        <DispatchContext.Provider value={dispatch}>
             <div className="container mt-5">
                 <Filter dispatch={dispatchFilter} />
                 <TodoList todos={filteredTodos} />
                 <AddTodo />
             </div>
-        </TodoContext.Provider>
+        </DispatchContext.Provider>
     );
 };
 
