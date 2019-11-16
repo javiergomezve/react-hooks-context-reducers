@@ -88,18 +88,26 @@ const todoReducer = (state, action) => {
 
 export const DispatchContext = createContext(null);
 
-const App = () => {
-    const [filter, dispatchFilter] = useReducer(filterReducer, ALL);
-    const [todos, dispatchTodos] = useReducer(todoReducer, initialTodos);
-
-    // Global Dispatch Function
-    const dispatch = action => [dispatchTodos, dispatchFilter].forEach(fn => fn(action));
-
+const useCombinedReducer = combinedReducers => {
     // Global state
-    const state = {
-        filter,
-        todos,
-    };
+    const state = Object.keys(combinedReducers).reduce(
+        (acc, key) => ({ ...acc, [key]: combinedReducers[key][0] }),
+        {}
+    );
+
+    // Global dispatch function
+    const dispatch = action => Object.keys(combinedReducers)
+        .map(key => combinedReducers[key][1])
+        .forEach(fn => fn(action));
+
+    return [state, dispatch];
+};
+
+const App = () => {
+    const [state, dispatch] = useCombinedReducer({
+        filter: useReducer(filterReducer, ALL),
+        todos: useReducer(todoReducer, initialTodos)
+    });
 
     const filteredTodos = state.todos.filter(todo => {
         if (state.filter === ALL) {
@@ -120,7 +128,7 @@ const App = () => {
     return (
         <DispatchContext.Provider value={dispatch}>
             <div className="container mt-5">
-                <Filter dispatch={dispatchFilter} />
+                <Filter dispatch={dispatch} />
                 <TodoList todos={filteredTodos} />
                 <AddTodo />
             </div>
