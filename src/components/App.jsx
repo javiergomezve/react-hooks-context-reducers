@@ -1,6 +1,9 @@
 import React, { useState, useReducer } from 'react';
 import uuid from 'uuid/v4';
-import classnames from 'classnames';
+
+import Filter from './Filter';
+import TodoList from './TodoList';
+import AddTodo from './AddTodo';
 
 const initialTodos = [
     {
@@ -20,12 +23,12 @@ const initialTodos = [
     },
 ];
 
-const SHOW_ALL = 'SHOW_ALL';
-const ALL = 'ALL';
-const SHOW_COMPLETE = 'SHOW_COMPLETE';
-const COMPLETE = 'COMPLETE';
-const SHOW_INCOMPLETE = 'SHOW_INCOMPLETE';
-const INCOMPLETE = 'INCOMPLETE';
+export const SHOW_ALL = 'SHOW_ALL';
+export const ALL = 'ALL';
+export const SHOW_COMPLETE = 'SHOW_COMPLETE';
+export const COMPLETE = 'COMPLETE';
+export const SHOW_INCOMPLETE = 'SHOW_INCOMPLETE';
+export const INCOMPLETE = 'INCOMPLETE';
 
 const filterReducer = (state, action) => {
     switch (action.type) {
@@ -43,9 +46,9 @@ const filterReducer = (state, action) => {
     }
 };
 
-const DO_TODO = 'DO_TODO';
-const UNDO_TODO = 'UNDO_TODO';
-const ADD_TODO = 'ADD_TODO';
+export const DO_TODO = 'DO_TODO';
+export const UNDO_TODO = 'UNDO_TODO';
+export const ADD_TODO = 'ADD_TODO';
 
 const todoReducer = (state, action) => {
     switch (action.type) {
@@ -86,44 +89,8 @@ const todoReducer = (state, action) => {
 const App = () => {
     const [filter, dispatchFilter] = useReducer(filterReducer, ALL);
     const [todos, dispatchTodos] = useReducer(todoReducer, initialTodos);
-    const [task, setTask] = useState('');
 
-    const handleChangeCheckbox = todo => {
-        dispatchTodos({
-            type: todo.complete ? UNDO_TODO : DO_TODO,
-            id: todo.id
-        });
-    };
 
-    const handleChangeInput = event => {
-        setTask(event.target.value);
-    };
-
-    const handleSubmit = event => {
-        if (task) {
-            dispatchTodos({
-                type: ADD_TODO,
-                task,
-                id: uuid()
-            });
-        }
-
-        setTask('');
-
-        event.preventDefault();
-    };
-
-    const handleShowAll = () => {
-        dispatchFilter({ type: SHOW_ALL });
-    };
-
-    const handleShowComplete = () => {
-        dispatchFilter({ type: SHOW_COMPLETE });
-    };
-
-    const handleShowIncomplete = () => {
-        dispatchFilter({ type: SHOW_INCOMPLETE });
-    };
 
     const filteredTodos = todos.filter(todo => {
         if (filter === ALL) {
@@ -143,34 +110,9 @@ const App = () => {
 
     return (
         <div className="container mt-5">
-            <div className="btn-group d-flex mb-3" role="group" aria-label="Basic example">
-                <button type="button" className="btn btn-info" onClick={handleShowAll}>Show All</button>
-                <button type="button" className="btn btn-success" onClick={handleShowComplete}>Show Complete</button>
-                <button type="button" className="btn btn-warning" onClick={handleShowIncomplete}>Show Incomplete</button>
-            </div>
-
-            <ul className="list-group mb-3">
-                {filteredTodos.map(todo => (
-                    <li key={todo.id} className={classnames({'list-group-item-success' : todo.complete}, 'list-group-item')}>
-                        <label>
-                            <input
-                                type="checkbox"
-                                checked={todo.complete}
-                                onChange={() => handleChangeCheckbox(todo)}
-                            />
-                            {todo.task}
-                        </label>
-                    </li>
-                ))}
-            </ul>
-
-            <form onSubmit={handleSubmit}>
-                <div className="form-group mb-2">
-                    <input type="text" value={task} onChange={handleChangeInput} placeholder="Task..."
-                           className="form-control"/>
-                </div>
-                <button type="submit" className="btn btn-primary mb-2">Add todo</button>
-            </form>
+            <Filter dispatch={dispatchFilter} />
+            <TodoList dispatch={dispatchTodos} todos={filteredTodos} />
+            <AddTodo dispatch={dispatchTodos} />
         </div>
     );
 };
